@@ -10,9 +10,7 @@ import { User } from '../../auth/entity/user.entity';
 import { PreferredPaymentMethod } from 'src/shared/enums';
 import { Rating } from './rating.entity';
 import { Article } from './article.entity';
-import { Availability } from './availability.entity';
-import { Booking } from 'src/client/entities/booking.entity';
-
+import { Schedule } from './schedule.entity';
 
 @Entity()
 export class Counselor {
@@ -70,9 +68,6 @@ export class Counselor {
   })
   articles: Article;
 
-  @OneToMany(() => Availability, (a) => a.counselor)
-  availabilities: Availability[];
-
-  @OneToMany(() => Booking, (booking) => booking.counselor)
-  bookings: Booking[];
+  @OneToMany(() => Schedule, (schedule) => schedule.counselor)
+  schedules: Schedule[];
 }

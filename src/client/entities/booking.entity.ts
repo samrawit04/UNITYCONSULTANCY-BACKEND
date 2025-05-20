@@ -1,48 +1,36 @@
-// src/booking/entities/booking.entity.ts
-import { Availability } from 'src/counselor/entities/availability.entity';
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Client } from './client.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+} from 'typeorm';
+import { Schedule } from 'src/counselor/entities/schedule.entity';
 import { Counselor } from 'src/counselor/entities/counselor.entity';
-
-export enum BookingStatus {
-  PENDING = 'pending',
-  CONFIRMED = 'confirmed',
-  CANCELLED = 'cancelled',
-  COMPLETED = 'completed',
-}
 
 @Entity()
 export class Booking {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @ManyToOne(() => Counselor, (counselor) => counselor.bookings)
+  @ManyToOne(() => Schedule)
+  schedule: Schedule;
+
+  @Column()
+  scheduleId: number;
+
+  @ManyToOne(() => Counselor)
   counselor: Counselor;
 
-  @ManyToOne(() => Client, (client) => client.bookings)
-  client: Client;
+  @Column()
+  counselorId: number;
 
-  @ManyToOne(() => Availability, (availability) => availability.bookings, {
-    eager: true,
-  })
-  availability: Availability;
+  @Column()
+  clientName: string;
 
-  @Column({ type: 'date' })
-  date: Date;
+  @Column()
+  clientEmail: string;
 
-  @Column({ type: 'time' })
-  startTime: Date;
-
-  @Column({ type: 'time' })
-  endTime: Date;
-
-  @Column({
-    type: 'enum',
-    enum: BookingStatus,
-    default: BookingStatus.PENDING,
-  })
-  status: BookingStatus;
-
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   createdAt: Date;
 }

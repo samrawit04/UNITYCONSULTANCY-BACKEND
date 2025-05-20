@@ -12,32 +12,21 @@ import { Client } from 'src/client/entities/client.entity';
 import { Article } from './entities/article.entity';
 import { ArticleService } from './service/article.service';
 import { ArticleController } from './controllers/article.controller';
-import { Availability } from './entities/availability.entity';
-import { AvailabilityService } from './service/counselor-avaliblity.service';
-import { AvailabilityCounselor } from './controllers/counselor-availability.controller';
+import { Schedule } from './entities/schedule.entity';
+import { ScheduleController } from './controllers/schedule.controller';
+import { ScheduleService } from './service/schedule.service';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      Counselor,
-      Rating,
-      Client,
-      Article,
-      Availability,
-    ]),
+    TypeOrmModule.forFeature([Counselor, Rating, Client, Article, Schedule]),
     UserModule,
   ],
   controllers: [
     CounselorController,
     RatingController,
     ArticleController,
-    AvailabilityCounselor,
+    ScheduleController,
   ],
-  providers: [
-    CounselorService,
-    RatingService,
-    ArticleService,
-    AvailabilityService,
-  ],
+  providers: [CounselorService, RatingService, ArticleService, ScheduleService],
   exports: [TypeOrmModule],
 })
 export class CounselorModule {}
