@@ -1,28 +1,19 @@
-import {
-  IsDateString,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-} from 'class-validator';
+import { IsNotEmpty, IsEmail, IsString, IsNumber } from 'class-validator';
 
 export class CreateBookingDto {
+  @IsNotEmpty()
   @IsNumber()
-  @IsNotEmpty()
-  counselorId: string;
+  scheduleId: number;
 
+  @IsNotEmpty()
   @IsNumber()
-  @IsNotEmpty()
-  availabilityId: string;
+  counselorId: number;
 
-  @IsDateString()
   @IsNotEmpty()
-  date: string;
-
   @IsString()
-  @IsNotEmpty()
-  startTime: string;
+  clientName: string;
 
-  @IsString()
   @IsNotEmpty()
-  endTime: string;
+  @IsEmail()
+  clientEmail: string;
 }

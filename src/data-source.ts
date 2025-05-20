@@ -6,7 +6,7 @@ import { AccountVerification } from './auth/entity/account-verification.entity';
 import { Counselor } from './counselor/entities/counselor.entity';
 import { Rating } from './counselor/entities/rating.entity';
 import { Article } from './counselor/entities/article.entity';
-import { Availability } from './counselor/entities/availability.entity';
+import { Schedule } from './counselor/entities/schedule.entity';
 import { Booking } from './client/entities/booking.entity';
 
 export const dataSourceOptions: DataSourceOptions = {
@@ -25,8 +25,8 @@ export const dataSourceOptions: DataSourceOptions = {
     Counselor,
     Rating,
     Article,
-    Availability,
-    Booking,
+    Schedule,
+    Booking
   ],
   migrations: [],
 };

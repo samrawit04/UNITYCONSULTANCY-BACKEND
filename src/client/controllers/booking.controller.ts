@@ -1,17 +1,40 @@
-import { Body, Controller, Param, Post, Request } from '@nestjs/common';
-import { BookingService } from '../services/booking.serivce';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Query,
+  ParseIntPipe,
+} from '@nestjs/common';
+
 import { CreateBookingDto } from '../dto/booking.dto';
+import { BookingService } from '../services/booking.servicee';
+import { TimeSlot } from '../booking.types';
 
-
-@Controller('bookings')
+@Controller('api')
 export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
-  @Post(':clientId')
-  async create(
-    @Param('clientId') clientId: string,
-    @Body() dto: CreateBookingDto,
-  ) {
-    return this.bookingService.create(clientId, dto);
+  @Post('bookings')
+  create(@Body() createBookingDto: CreateBookingDto) {
+    return this.bookingService.create(createBookingDto);
+  }
+  @Get('slots')
+  getAvailableSlots(
+    @Query('date') date: string,
+    @Query('counselorId', ParseIntPipe) counselorId: number,
+  ): Promise<TimeSlot[]> {
+    return this.bookingService.getAvailableSlots(date, counselorId);
+  }
+
+  @Get('bookings/client')
+  getClientBookings(@Query('email') email: string) {
+    return this.bookingService.getBookingsByClient(email);
+  }
+
+  @Get('bookings/:id')
+  getBooking(@Param('id', ParseIntPipe) id: number) {
+    return this.bookingService.getBookingById(id);
   }
 }
