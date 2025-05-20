@@ -1,0 +1,193 @@
+### Create a new user
+POST http://localhost:3000/user/signup
+Content-Type: application/json
+
+{   "firstName":"nati",
+    "lastName":"fiker",
+    "email": "asasasawewe1@gmail.com",
+    "password": "natnael",
+    "role":"CLIENT"
+}
+
+### update counselor profile
+PATCH http://localhost:3000/counselors/complete-profile
+Content-Type: application/json
+
+{
+  "userId":"b04d56b7-bc30-4280-a287-d754156a0ee2",
+  "phoneNumber": "123-456-7890",
+  "addres": "123 Counselor St, Cityville",
+  "profilePicture": "http://example.com/profile.jpg",
+  "gender": "Male",
+  "specialization": "Therapist",
+  "cerificate": ["Cert 1", "Cert 2"],
+  "bio": "Experienced counselor with over 10 years of practice.",
+  "languagesSpoken": ["English", "Spanish"],
+  "preferredPaymentMethod": "Bank Transfer",
+  "bankAccountOrPhone": "1234567890"
+}
+
+###approved counselor
+PATCH http://localhost:3000/counselors/b04d56b7-bc30-4280-a287-d754156a0ee2/approve
+
+###get all counselor
+GET http://localhost:3000/counselors
+
+
+###create availability
+POST http://localhost:3000/availability/b04d56b7-bc30-4280-a287-d754156a0ee2
+Content-Type: application/json
+
+{
+  "date": "2025-04-16",
+  "fromTime": "08:00",
+  "toTime": "09:00"
+}
+
+
+### update client profile
+PATCH http://localhost:3000/client/complete-profile
+Content-Type: application/json
+
+{
+  "userId": "19d18d67-c02f-4428-bd8a-3470328e94ef",
+  "phoneNumber": "+1234567890",
+  "addres": "123 Main Street, Cityville",
+  "profilePicture": "https://example.com/profile.jpg",
+  "gender": "Female",
+  "maritalStatus": "Single",
+  "dateOfBirth": "1995-06-15"
+}
+
+### rating counselor
+POST http://localhost:3000/ratings
+Content-Type: application/json
+
+{
+  "clientId": "19d18d67-c02f-4428-bd8a-3470328e94ef",
+  "counselorId": "b04d56b7-bc30-4280-a287-d754156a0ee2",
+  "score": 5,
+  "feedback": "good session!"
+}
+
+### see counselors rating in profile
+GET http://localhost:3000/counselors/profile/b04d56b7-bc30-4280-a287-d754156a0ee2
+
+
+### update client profile
+PATCH http://localhost:3000/client/complete-profile
+Content-Type: application/json
+
+{
+  "userId":"55a5bdf9-2416-4271-8a70-9467e2e6a701",
+  "phoneNumber": "+1234567890",
+  "addres": "123 Main Street, New York, NY",
+  "profilePicture": "https://example.com/images/user123.jpg",
+  "gender": "female",
+  "maritalStatus": "single",
+  "dateOfBirth": "1995-06-15"
+}
+
+
+###  verifiy account
+POST http://localhost:3000/user/verifyAccount
+Content-Type: application/json
+
+{
+  "verificationId": "7b4e9789-3f0a-45cc-8480-f47ad3fc1af4",
+  "otp": "112144",
+  "isOtp": true
+}
+
+
+###  resend otp
+POST http://localhost:3000/user/resend-otp
+Content-Type: application/json
+
+{
+
+  "verificationId": "5c3577e8-112a-4266-9c50-71530ee87843"
+}
+
+
+### Sign in as an existing user 
+POST http://localhost:3000/user/signin
+Content-Type: application/json
+
+{
+    "email": "lidiyafiker09@gmail.com",
+    "password": "newlidiya"
+}
+
+
+
+### Sign in as an existing user 
+POST http://localhost:3000/user/forget-password
+Content-Type: application/json
+
+{
+  "email": "lidiyafiker09@gmail.com"
+}
+
+
+###  verifiy account
+POST http://localhost:3000/user/reset-password
+Content-Type: application/json
+
+{
+
+  "verificationId": "fd162124-5db0-4c4e-9ad5-715638d6594c",
+  "otp": "801066",
+  "password":"helloworld",
+  "isOtp": true
+}
+
+
+###  verifiy account
+POST http://localhost:3000/user/set-password
+Content-Type: application/json
+
+{
+  "verificationId": "",
+  "otp": "",
+  "password":"",
+  "isOtp": true
+}
+
+
+
+###Post article
+POST http://localhost:3000/articles/b04d56b7-bc30-4280-a287-d754156a0ee2
+Content-Type: application/json
+
+{
+  "title": " new The Power of Counseling",
+  "description": " new An in-depth article about the importance of counseling in personal growth and development."
+}
+
+
+###get all articles 
+GET http://localhost:3000/articles
+
+
+###get specific article 
+
+GET http://localhost:3000/articles/bb3efa36-558f-45e8-8b13-bd1120e4138f
+
+###update an article 
+
+PATCH http://localhost:3000/articles/fd7f58d4-8a0a-4488-a40d-047348c1b41b
+Content-Type: application/json
+
+{
+  "title": "The Ultimate Guide to Counseling",
+  "description": "A comprehensive guide to understanding and seeking counseling services for personal well-being."
+}
+
+###delete an article 
+
+DELETE http://localhost:3000/articles/fd7f58d4-8a0a-4488-a40d-047348c1b41b
+
+
+
+# b04d56b7-bc30-4280-a287-d754156a0ee2
