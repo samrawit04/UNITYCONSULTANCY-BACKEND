@@ -32,6 +32,11 @@ export class ArticleController {
     return this.articleService.findOne(id);
   }
 
+  @Get('by-counselor/:counselorId')
+async getByCounselorId(@Param('counselorId') counselorId: string) {
+  return this.articleService.findByCounselorId(counselorId);
+}
+
   // Update an article
   @Patch(':id')
   async update(

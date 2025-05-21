@@ -40,6 +40,22 @@ export class ArticleService {
     relations: ['counselor', 'counselor.user'], // Includes counselor info and their user profile
   });
 }
+async findByCounselorId(counselorUserId: string): Promise<Article[]> {
+  const counselor = await this.counselorRepository.findOne({
+    where: { userId: counselorUserId },
+  });
+
+  if (!counselor) {
+    throw new NotFoundException('Counselor not found');
+  }
+
+  return this.articleRepository.find({
+    where: { counselor }, // ✅ This is correct
+    relations: ['counselor', 'counselor.user'],
+    
+  });
+}
+
 
   async findOne(id: string): Promise<Article> {
     const article = await this.articleRepository.findOne({
