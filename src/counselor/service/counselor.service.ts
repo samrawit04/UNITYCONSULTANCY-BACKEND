@@ -88,9 +88,16 @@ export class CounselorService {
     return this.counselorRepository.save(counselor);
   }
 
-  async findAll(): Promise<Counselor[]> {
-    return this.counselorRepository.find({
+  async findAll(): Promise<any[]> {
+    const counselors = await this.counselorRepository.find({
       relations: ['user', 'ratings', 'articles'],
     });
+
+    return counselors.map((counselor) => ({
+      id: counselor.userId,
+      firstName: counselor.user.firstName,
+      lastName: counselor.user.lastName,
+      image: counselor.profilePicture,
+    }));
   }
 }
