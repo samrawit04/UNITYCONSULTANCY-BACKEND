@@ -11,7 +11,7 @@ import { CreateBookingDto } from '../dto/booking.dto';
 import { Schedule } from 'src/counselor/entities/schedule.entity';
 
 interface TimeSlot {
-  id: number;
+  id: string;
   start: string;
   end: string;
   isAvailable: boolean;
@@ -56,7 +56,7 @@ export class BookingService {
 
   async getAvailableSlots(
     date: string,
-    counselorId: number,
+    counselorId: string,
   ): Promise<TimeSlot[]> {
     const schedules = await this.scheduleRepository.find({
       where: {
@@ -84,7 +84,7 @@ export class BookingService {
     });
   }
 
-  async getBookingById(id: number): Promise<Booking> {
+  async getBookingById(id: string): Promise<Booking> {
     const booking = await this.bookingRepository.findOne({
       where: { id },
       relations: ['schedule', 'counselor'],
@@ -97,7 +97,7 @@ export class BookingService {
     return booking;
   }
 
-  async cancelBooking(id: number): Promise<void> {
+  async cancelBooking(id: string): Promise<void> {
     const booking = await this.bookingRepository.findOne({
       where: { id },
       relations: ['schedule'],

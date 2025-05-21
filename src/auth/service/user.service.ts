@@ -410,15 +410,10 @@ export class UserService {
       where: [email ? { email } : null].filter(Boolean),
     });
 
-    // if (!user || user.status != AccountStatusEnum.ACTIVE) {
-    //   throw new HttpException('somethin_went_wrong', HttpStatus.BAD_REQUEST);
-    // }
-
-    // Use bcrypt for password comparison
-   const isPasswordValid = await bcrypt.compare(password, user.password);
-if (!isPasswordValid) {
-  throw new BadRequestException('Invalid email or password');
-}
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new BadRequestException('Invalid email or password');
+    }
 
     const tokenPayload = {
       id: user.id,

@@ -20,7 +20,7 @@ export class ScheduleService {
   async findAvailableSlots(
     startDate: Date,
     endDate: Date,
-    counselorId: number,
+    counselorId: string,
   ): Promise<Schedule[]> {
     return await this.scheduleRepository.find({
       where: {
@@ -36,7 +36,7 @@ export class ScheduleService {
   }
 
   async updateAvailability(
-    id: number,
+    id: string,
     updateScheduleDto: UpdateScheduleDto,
   ): Promise<Schedule> {
     const schedule = await this.scheduleRepository.findOne({ where: { id } });

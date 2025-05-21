@@ -33,7 +33,7 @@ export class ScheduleController {
   async getAvailableInRange(
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
-    @Query('counselorId') counselorId: number,
+    @Query('counselorId') counselorId: string,
   ) {
     const schedules = await this.scheduleRepository.find({
       where: {
@@ -54,7 +54,7 @@ export class ScheduleController {
 
   @Put(':id')
   async updateAvailability(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() updateScheduleDto: UpdateScheduleDto,
   ) {
     return await this.scheduleService.updateAvailability(id, updateScheduleDto);

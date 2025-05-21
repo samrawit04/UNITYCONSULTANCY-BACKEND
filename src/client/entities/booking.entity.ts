@@ -10,20 +10,20 @@ import { Counselor } from 'src/counselor/entities/counselor.entity';
 
 @Entity()
 export class Booking {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @ManyToOne(() => Schedule)
   schedule: Schedule;
 
   @Column()
-  scheduleId: number;
+  scheduleId: string;
 
   @ManyToOne(() => Counselor)
   counselor: Counselor;
 
   @Column()
-  counselorId: number;
+  counselorId: string;
 
   @Column()
   clientName: string;

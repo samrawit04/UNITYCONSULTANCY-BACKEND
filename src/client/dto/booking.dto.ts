@@ -3,11 +3,11 @@ import { IsNotEmpty, IsEmail, IsString, IsNumber } from 'class-validator';
 export class CreateBookingDto {
   @IsNotEmpty()
   @IsNumber()
-  scheduleId: number;
+  scheduleId: string;
 
   @IsNotEmpty()
   @IsNumber()
-  counselorId: number;
+  counselorId: string;
 
   @IsNotEmpty()
   @IsString()
