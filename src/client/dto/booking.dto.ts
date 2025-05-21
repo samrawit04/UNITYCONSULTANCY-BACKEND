@@ -6,14 +6,6 @@ export class CreateBookingDto {
   scheduleId: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  counselorId: string;
-
-  @IsNotEmpty()
   @IsString()
-  clientName: string;
-
-  @IsNotEmpty()
-  @IsEmail()
-  clientEmail: string;
+  clientId: string;
 }

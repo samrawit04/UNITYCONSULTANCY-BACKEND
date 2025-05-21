@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Schedule } from 'src/counselor/entities/schedule.entity';
 import { Counselor } from 'src/counselor/entities/counselor.entity';
+import { Client } from './client.entity';
 
 @Entity()
 export class Booking {
@@ -19,17 +20,12 @@ export class Booking {
   @Column()
   scheduleId: string;
 
-  @ManyToOne(() => Counselor)
-  counselor: Counselor;
+
+  @ManyToOne(() => Client, (client) => client.bookings)
+  client: Client;
 
   @Column()
-  counselorId: string;
-
-  @Column()
-  clientName: string;
-
-  @Column()
-  clientEmail: string;
+  clientId: string;
 
   @CreateDateColumn()
   createdAt: Date;
