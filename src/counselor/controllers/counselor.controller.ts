@@ -24,15 +24,15 @@ export class CounselorController {
     FileFieldsInterceptor(
       [
         { name: 'profilePicture', maxCount: 1 },
-        { name: 'certificate', maxCount: 5 },
+        { name: 'cerificate', maxCount: 5 },
       ],
       {
         storage: diskStorage({
           destination: (req, file, cb) => {
             if (file.fieldname === 'profilePicture') {
               cb(null, './uploads/profile-pictures');
-            } else if (file.fieldname === 'certificate') {
-              cb(null, './uploads/certificates');
+            } else if (file.fieldname === 'cerificate') {
+              cb(null, './uploads/cerificates');
             } else {
               cb(null, './uploads/others');
             }
@@ -47,7 +47,7 @@ export class CounselorController {
           fileSize: 5 * 1024 * 1024, // Max 5MB per file
         },
         fileFilter: (req, file, cb) => {
-          // Accept only images and PDFs for certificates
+          // Accept only images and PDFs for cerificates
           if (
             file.fieldname === 'profilePicture' &&
             !file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)
@@ -56,10 +56,10 @@ export class CounselorController {
           }
 
           if (
-            file.fieldname === 'certificate' &&
+            file.fieldname === 'cerificate' &&
             !file.mimetype.match(/\/(pdf|jpg|jpeg|png)$/)
           ) {
-            return cb(new Error('Only PDF or image files are allowed for certificates'), false);
+            return cb(new Error('Only PDF or image files are allowed for cerificates'), false);
           }
 
           cb(null, true);
@@ -71,7 +71,7 @@ export class CounselorController {
     @UploadedFiles()
     files: {
       profilePicture?: Express.Multer.File[];
-      certificate?: Express.Multer.File[];
+      cerificate?: Express.Multer.File[];
     },
     @Body() dto: CompleteCounselorProfileDto,
   ) {
@@ -79,8 +79,8 @@ export class CounselorController {
       dto.profilePicture = files.profilePicture[0].filename;
     }
 
-    if (files.certificate?.length) {
-      dto.cerificate = files.certificate.map((file) => file.filename);
+    if (files.cerificate?.length) {
+      dto.cerificate = files.cerificate.map((file) => file.filename);
     }
 
     return this.counselorService.completeProfile(dto);
