@@ -19,8 +19,8 @@ export class CreateScheduleDto {
   @IsBoolean()
   isAvailable: boolean;
 
-  @IsNumber()
-  counselorId: number;
+  @IsString()
+  counselorId:string;
 }
 
 export class UpdateScheduleDto {

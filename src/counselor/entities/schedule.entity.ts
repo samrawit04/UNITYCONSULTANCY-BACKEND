@@ -1,11 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+} from 'typeorm';
 import { Counselor } from './counselor.entity';
 import { Booking } from 'src/client/entities/booking.entity';
 
 @Entity()
 export class Schedule {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ type: 'date' })
   date: Date;
@@ -20,10 +27,12 @@ export class Schedule {
   isAvailable: boolean;
 
   @ManyToOne(() => Counselor, (counselor) => counselor.schedules)
+  @JoinColumn({ name: 'counselorId' })
   counselor: Counselor;
 
-  @Column()
-  counselorId: number;
+  @Column({ type: 'uuid' })
+  counselorId: string;
+
   @OneToMany(() => Booking, (booking) => booking.schedule)
   bookings: Booking[];
 }

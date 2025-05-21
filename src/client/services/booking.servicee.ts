@@ -11,7 +11,7 @@ import { CreateBookingDto } from '../dto/booking.dto';
 import { Schedule } from 'src/counselor/entities/schedule.entity';
 
 interface TimeSlot {
-  id: number;
+  id: string;
   start: string;
   end: string;
   isAvailable: boolean;
@@ -30,7 +30,6 @@ export class BookingService {
     const updateResult = await this.scheduleRepository.update(
       {
         id: createBookingDto.scheduleId,
-        counselorId: createBookingDto.counselorId,
         isAvailable: true,
       },
       { isAvailable: false },
@@ -46,9 +45,7 @@ export class BookingService {
     // Create booking after successfully reserving the slot
     const booking = this.bookingRepository.create({
       scheduleId: createBookingDto.scheduleId,
-      counselorId: createBookingDto.counselorId,
-      clientName: createBookingDto.clientName,
-      clientEmail: createBookingDto.clientEmail,
+      clientId: createBookingDto.clientId,
     });
 
     return this.bookingRepository.save(booking);
@@ -56,7 +53,7 @@ export class BookingService {
 
   async getAvailableSlots(
     date: string,
-    counselorId: number,
+    counselorId: string,
   ): Promise<TimeSlot[]> {
     const schedules = await this.scheduleRepository.find({
       where: {
@@ -77,14 +74,14 @@ export class BookingService {
     }));
   }
 
-  async getBookingsByClient(clientEmail: string): Promise<Booking[]> {
+  async getBookingsByClient(clientId: string): Promise<Booking[]> {
     return this.bookingRepository.find({
-      where: { clientEmail },
+      where: { clientId },
       relations: ['schedule', 'counselor'],
     });
   }
 
-  async getBookingById(id: number): Promise<Booking> {
+  async getBookingById(id: string): Promise<Booking> {
     const booking = await this.bookingRepository.findOne({
       where: { id },
       relations: ['schedule', 'counselor'],
@@ -97,7 +94,7 @@ export class BookingService {
     return booking;
   }
 
-  async cancelBooking(id: number): Promise<void> {
+  async cancelBooking(id: string): Promise<void> {
     const booking = await this.bookingRepository.findOne({
       where: { id },
       relations: ['schedule'],

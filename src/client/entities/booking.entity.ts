@@ -7,29 +7,25 @@ import {
 } from 'typeorm';
 import { Schedule } from 'src/counselor/entities/schedule.entity';
 import { Counselor } from 'src/counselor/entities/counselor.entity';
+import { Client } from './client.entity';
 
 @Entity()
 export class Booking {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @ManyToOne(() => Schedule)
   schedule: Schedule;
 
   @Column()
-  scheduleId: number;
+  scheduleId: string;
 
-  @ManyToOne(() => Counselor)
-  counselor: Counselor;
 
-  @Column()
-  counselorId: number;
+  @ManyToOne(() => Client, (client) => client.bookings)
+  client: Client;
 
   @Column()
-  clientName: string;
-
-  @Column()
-  clientEmail: string;
+  clientId: string;
 
   @CreateDateColumn()
   createdAt: Date;

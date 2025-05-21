@@ -23,7 +23,7 @@ export class BookingController {
   @Get('slots')
   getAvailableSlots(
     @Query('date') date: string,
-    @Query('counselorId', ParseIntPipe) counselorId: number,
+    @Query('counselorId', ParseIntPipe) counselorId: string,
   ): Promise<TimeSlot[]> {
     return this.bookingService.getAvailableSlots(date, counselorId);
   }
@@ -34,7 +34,7 @@ export class BookingController {
   }
 
   @Get('bookings/:id')
-  getBooking(@Param('id', ParseIntPipe) id: number) {
+  getBooking(@Param('id', ParseIntPipe) id: string) {
     return this.bookingService.getBookingById(id);
   }
 }
