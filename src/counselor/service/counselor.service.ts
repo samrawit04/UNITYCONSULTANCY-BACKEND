@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 import { User } from 'src/auth/entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CompleteCounselorProfileDto } from '../dto/complete-counselor-profile.dto';
-import { RatingService } from './rating.service';
+import { ReviewService } from './review.service';
 
 @Injectable()
 export class CounselorService {
@@ -19,7 +19,7 @@ export class CounselorService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
 
-    private readonly ratingService: RatingService,
+    private readonly reviewService: ReviewService,
   ) {}
 
   async completeProfile(dto: CompleteCounselorProfileDto): Promise<Counselor> {
@@ -64,12 +64,12 @@ export class CounselorService {
       throw new NotFoundException('Counselor not found');
     }
 
-    const avgScore = await this.ratingService.getAverageScore(userId);
-    const roundedAvg = Math.round(avgScore * 10) / 10;
+    // const avgScore = await this.reviewService.getAverageScore(userId);
+    // const roundedAvg = Math.round(avgScore * 10) / 10;
 
     return {
       ...counselor,
-      averageScore: roundedAvg,
+      // averageScore: roundedAvg,
     };
   }
 

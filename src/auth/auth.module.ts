@@ -5,9 +5,9 @@ import { UserController } from './controllers/user.controller';
 import { UserService } from './service/user.service';
 import { AccountVerification } from './entity/account-verification.entity';
 import { PassportModule } from '@nestjs/passport';
-import { AuthController } from './controllers/auth.controller';
+// import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './service/auth.service';
-import { GoogleStrategy } from 'src/google.strategy';
+// import { GoogleStrategy } from 'src/google.strategy';
 import { EmailService } from './service/email.service';
 import { AuthHelper } from './helper/auth.helper';
 import { Audit } from 'src/shared/entities/audit.entity';
@@ -29,11 +29,11 @@ import { CounselorModule } from 'src/counselor/counselor.module';
     ClientModule,
     CounselorModule,
   ],
-  controllers: [UserController, AuthController],
+  controllers: [UserController, ],
   providers: [
     UserService,
     AuthService,
-    GoogleStrategy,
+    // GoogleStrategy,
     EmailService,
     AuthHelper,
   ],

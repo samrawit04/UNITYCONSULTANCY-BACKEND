@@ -8,8 +8,9 @@ import {
 } from 'typeorm';
 import { User } from '../../auth/entity/user.entity';
 import { Gender, MaritalStatus } from 'src/shared/enums';
-import { Rating } from 'src/counselor/entities/rating.entity';
+
 import { Booking } from './booking.entity';
+import { Review } from 'src/counselor/entities/review.entity';
 
 @Entity()
 export class Client {
@@ -41,11 +42,15 @@ export class Client {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @OneToMany(() => Rating, (rating) => rating.client)
-  ratings: Rating;
+
 
   @OneToMany(() => Booking, (booking) => booking.client)
   bookings: Booking[];
+  
+  // client.entity.ts
+@OneToMany(() => Review, (review) => review.client)
+reviews: Review[];
+
 
 
 }

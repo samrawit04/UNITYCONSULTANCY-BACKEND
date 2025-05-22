@@ -8,9 +8,9 @@ import {
 } from 'typeorm';
 import { User } from '../../auth/entity/user.entity';
 import { PreferredPaymentMethod } from 'src/shared/enums';
-import { Rating } from './rating.entity';
 import { Article } from './article.entity';
 import { Schedule } from './schedule.entity';
+import { Review } from './review.entity';
 
 @Entity()
 export class Counselor {
@@ -60,9 +60,6 @@ export class Counselor {
   @Column({ type: 'timestamp', nullable: true })
   approvedAt?: Date;
 
-  @OneToMany(() => Rating, (rating) => rating.counselor)
-  ratings: Rating;
-
   @OneToMany(() => Article, (article) => article.counselor, {
     onDelete: 'CASCADE',
   })
@@ -70,4 +67,9 @@ export class Counselor {
 
   @OneToMany(() => Schedule, (schedule) => schedule.counselor)
   schedules: Schedule[];
+
+  // counselor.entity.ts
+@OneToMany(() => Review, (review) => review.counselor)
+reviews: Review[];
+
 }
