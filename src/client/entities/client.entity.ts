@@ -46,11 +46,8 @@ export class Client {
 
   @OneToMany(() => Booking, (booking) => booking.client)
   bookings: Booking[];
-  
   // client.entity.ts
 @OneToMany(() => Review, (review) => review.client)
 reviews: Review[];
-
-
 
 }
