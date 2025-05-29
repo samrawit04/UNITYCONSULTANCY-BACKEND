@@ -37,6 +37,48 @@ export class ReviewService {
     return this.reviewRepo.save(review);
   }
 
+  async getReviewsByClient(clientId: string): Promise<Review[]> {
+  return this.reviewRepo.find({
+    where: { client: { userId: clientId } },
+    relations: ['counselor'],
+    order: { createdAt: 'DESC' },
+  });
+}
+
+// In review.service.ts
+async getAllReviews(): Promise<Review[]> {
+  return this.reviewRepo.find({
+    relations: ['client','client.user'],
+    order: { createdAt: 'DESC' },
+  });
+}
+
+// review.service.ts
+async getAverageRatingForAllCounselors() {
+  try {
+    const result = await this.reviewRepo
+      .createQueryBuilder("review")
+      .select("review.counselor_id", "counselorId")
+      .addSelect("AVG(review.rating)", "averageRating")
+      .groupBy("review.counselor_id")
+      .getRawMany();
+
+    return result.map(r => ({
+      counselorId: r.counselorId,
+      averageRating: parseFloat(r.averageRating),
+    }));
+  } catch (error) {
+    console.error('Error in getAverageRatingForAllCounselors:', error);
+    throw error; // rethrow to propagate 500
+  }
+}
+
+
+
+
+
+
+
   async getReviewsForCounselor(counselorId: string): Promise<Review[]> {
     return this.reviewRepo.find({
       where: { counselor: { userId: counselorId } },

@@ -17,6 +17,7 @@ export class UserController {
     try {
       const result = await this.userService.createAccount(createUserDto);
       return { success: true, verificationId: result.verificationId };
+      
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -26,6 +27,7 @@ export class UserController {
   async resendOtp(@Body() payload: ResendOtpDto) {
     return this.userService.resendOtp(payload);
   }
+  
   @Post('verifyAccount')
   async verifyAccount(@Body() verifyAccountDto: VerifyAccountDto) {
     return this.userService.verifyAccount(verifyAccountDto);

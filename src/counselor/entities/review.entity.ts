@@ -1,5 +1,5 @@
 // review.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn, JoinColumn } from 'typeorm';
 import { Client } from 'src/client/entities/client.entity';
 import { Counselor } from 'src/counselor/entities/counselor.entity';
 
@@ -20,6 +20,12 @@ export class Review {
   @ManyToOne(() => Client, (client) => client.reviews, { eager: true })
   client: Client;
 
+  // @ManyToOne(() => Counselor, (counselor) => counselor.reviews)
+  // counselor: Counselor;
+
   @ManyToOne(() => Counselor, (counselor) => counselor.reviews)
-  counselor: Counselor;
+@JoinColumn({ name: 'counselor_id' })  // Explicitly specify the column name
+counselor: Counselor;
+
+  
 }
