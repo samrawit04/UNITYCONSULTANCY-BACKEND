@@ -1,12 +1,14 @@
 import 'dotenv/config'; // this loads .env variables globally
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { User } from './auth/entity/user.entity';
-import { Client } from './client/entities/client.entity';
-import { AccountVerification } from './auth/entity/account-verification.entity';
-import { Counselor } from './counselor/entities/counselor.entity';
-import { Article } from './counselor/entities/article.entity';
-import { Schedule } from './counselor/entities/schedule.entity';
-import { Booking } from './client/entities/booking.entity';
+import { User } from './src/auth/entity/user.entity';
+import { Client } from './src/client/entities/client.entity';
+import { AccountVerification } from './src/auth/entity/account-verification.entity';
+import { Counselor } from './src/counselor/entities/counselor.entity';
+import { Article } from './src/counselor/entities/article.entity';
+import { Schedule } from './src/counselor/entities/schedule.entity';
+import { Booking } from './src/client/entities/booking.entity';
+import { Review } from './src/counselor/entities/review.entity';
+
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
@@ -18,14 +20,7 @@ export const dataSourceOptions: DataSourceOptions = {
   synchronize: true,
   logging: true,
   entities: [
-    User,
-    Client,
-    AccountVerification,
-    Counselor,
-    Rating,
-    Article,
-    Schedule,
-    Booking
+    User,Client,AccountVerification,Article,Booking,Counselor,Schedule,Review
   ],
   migrations: [
     'src/migrations/**/*.ts'

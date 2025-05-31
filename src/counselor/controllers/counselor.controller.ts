@@ -86,14 +86,25 @@ export class CounselorController {
     return this.counselorService.completeProfile(dto);
   }
 
+@Get('approved')
+async getApprovedCounselors() {
+  return this.counselorService.findApprovedAndActive();
+}
+
+
   @Get('profile/:userId')
   async getCounselorProfile(@Param('userId') userId: string) {
-    return this.counselorService.getCounselorProfile(userId);
+    return this.counselorService.getCounselorById(userId);
   }
 
   @Get()
   async getAllCounselors(): Promise<Counselor[]> {
     return this.counselorService.findAll();
+  }
+
+  @Get('CounselorsWithStatus')
+  async getAllCounselorsWithStatus():Promise<Counselor[]>{
+    return this.counselorService.getAllCounselorsWithStatus();
   }
 
   @Patch(':userId/approve')

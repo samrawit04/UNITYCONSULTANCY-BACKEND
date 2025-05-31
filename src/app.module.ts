@@ -10,7 +10,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CounselorModule } from './counselor/counselor.module';
 import { SeederService } from './seeder/seeder.service';
-
+import {AdminModule} from './admin/admin.module'
 @Module({
   imports: [
       
@@ -28,6 +28,7 @@ import { SeederService } from './seeder/seeder.service';
     ClientModule,
     AuthModule,
     CounselorModule,
+    AdminModule
   ],
   controllers: [AppController],
   providers: [AppService, SeederService],

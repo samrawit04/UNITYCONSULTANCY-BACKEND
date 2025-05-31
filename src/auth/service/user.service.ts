@@ -171,6 +171,19 @@ export class UserService {
     return { accountVerification, otp };
   }
 
+ async updateAccountStatus(userId: string, status: 'ACTIVE' | 'INACTIVE') {
+  const user = await this.userRepository.findOne({ where: { id: userId } });
+  if (!user) throw new NotFoundException('User not found');
+
+  user.status = status;
+  return this.userRepository.save(user);
+}
+
+async countByRole(role: Role): Promise<number> {
+  return this.userRepository.count({ where: { role } });
+}
+
+
   // Generate OTP
   public generateOpt(): string {
     const randomNumber = randomInt(100000, 999999);
@@ -311,18 +324,35 @@ export class UserService {
   }
 
   public async verifyAccount(body: VerifyAccountDto) {
-    const { verificationId, otp, isOtp }: VerifyAccountDto = body;
-    const account = await this.verifyOTP(verificationId, otp, isOtp);
+  const { verificationId, otp, isOtp }: VerifyAccountDto = body;
 
-    account.status = AccountStatusEnum.ACTIVE;
+  // Verify OTP and get the user account
+  const account = await this.verifyOTP(verificationId, otp, isOtp);
 
-    await this.userRepository.update(account.id, account);
+  // Activate the account
+  account.status = AccountStatusEnum.ACTIVE;
+  await this.userRepository.update(account.id, account);
 
-    return {
-      message: 'Account successfully verified and activated.',
-      role: account.role,
-    };
-  }
+  // Prepare payload for JWT token
+  const tokenPayload = {
+    id: account.id,
+    email: account.email,
+  };
+
+  // Generate access and refresh tokens
+  const token: LoginResponseDto = {
+    access_token: this.helper.generateAccessToken(tokenPayload),
+    refresh_token: this.helper.generateRefreshToken({ id: account.id }),
+  };
+
+  // Return success message, role, and tokens
+  return {
+    message: 'Account successfully verified and activated.',
+    role: account.role,
+    token,  // <-- Include tokens here
+  };
+}
+
 
   private async verifyOTP(
     verificationId: string,
