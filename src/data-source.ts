@@ -8,6 +8,7 @@ import { Rating } from './counselor/entities/rating.entity';
 import { Article } from './counselor/entities/article.entity';
 import { Schedule } from './counselor/entities/schedule.entity';
 import { Booking } from './client/entities/booking.entity';
+import { Payment } from './client/entities/payment.entity';
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
@@ -26,7 +27,8 @@ export const dataSourceOptions: DataSourceOptions = {
     Rating,
     Article,
     Schedule,
-    Booking
+    Booking,
+    Payment
   ],
   migrations: [],
 };

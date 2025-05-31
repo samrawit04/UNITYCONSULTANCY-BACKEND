@@ -20,6 +20,7 @@ export class BookingController {
   create(@Body() createBookingDto: CreateBookingDto) {
     return this.bookingService.create(createBookingDto);
   }
+
   @Get('slots')
   getAvailableSlots(
     @Query('date') date: string,

@@ -26,7 +26,6 @@ export class BookingService {
     private scheduleRepository: Repository<Schedule>,
   ) {}
   async create(createBookingDto: CreateBookingDto): Promise<Booking> {
-    // Atomically update schedule.isAvailable from true -> false
     const updateResult = await this.scheduleRepository.update(
       {
         id: createBookingDto.scheduleId,
@@ -34,15 +33,11 @@ export class BookingService {
       },
       { isAvailable: false },
     );
-
-    // If no rows updated, slot was already booked or doesn't exist
     if (updateResult.affected === 0) {
       throw new BadRequestException(
         'This slot is already booked or unavailable',
       );
     }
-
-    // Create booking after successfully reserving the slot
     const booking = this.bookingRepository.create({
       scheduleId: createBookingDto.scheduleId,
       clientId: createBookingDto.clientId,
