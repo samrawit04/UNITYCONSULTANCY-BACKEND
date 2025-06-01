@@ -28,6 +28,7 @@ import { EmailService } from './email.service';
 import { Client } from 'src/client/entities/client.entity';
 import { Counselor } from 'src/counselor/entities/counselor.entity';
 import { Role } from '../enum/role.enum';
+import { NotificationService } from '../../Notification/service/notification.service';
 
 export class UserService {
   constructor(
@@ -39,12 +40,14 @@ export class UserService {
 
     private readonly emailService: EmailService,
     private readonly helper: AuthHelper,
-
+    
     @InjectRepository(Client)
     private readonly clientRepository: Repository<Client>,
-
     @InjectRepository(Counselor)
     private readonly counselorRepository: Repository<Counselor>,
+
+private readonly notificationService: NotificationService,
+
   ) {}
 
   public async createAccount(
@@ -69,6 +72,24 @@ export class UserService {
       );
 
       const verificationId = await this.createAndSendVerificationOTP(user);
+
+      // ✅ Send notification after account creation
+    let message = '';
+    if (user.role === 'CLIENT') {
+      message = 'Welcome to Unity! Your client account has been created.';
+    } else if (user.role === 'COUNSELOR') {
+      message = 'Thank you for registering. Please wait for admin approval.';
+    }
+
+    if (message) {
+      await this.notificationService.sendNotification({
+        recipientId: user.id,
+        role: user.role,
+        message,
+        type: 'SYSTEM',
+      });
+    }
+    
       return { verificationId };
     } else if (user.status == AccountStatusEnum.PENDING) {
       const verificationId = await this.createAndSendVerificationOTP(user);
@@ -101,6 +122,7 @@ export class UserService {
       const client = this.clientRepository.create({
         userId: savedUser.id,
       });
+
       await this.clientRepository.save(client);
     } else if (role === Role.COUNSELOR) {
       const counselor = this.counselorRepository.create({

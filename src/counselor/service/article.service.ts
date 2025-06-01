@@ -4,32 +4,66 @@ import { Counselor } from '../entities/counselor.entity';
 import { Repository } from 'typeorm';
 import { Article } from '../entities/article.entity';
 import { CreateArticleDto, UpdateArticleDto } from '../dto/article.dto';
+import { NotificationService } from '../../Notification/service/notification.service';
+import { User } from 'src/auth/entity/user.entity';
+import { Role } from 'src/auth/enum/role.enum'; 
 
 export class ArticleService {
   constructor(
+    @InjectRepository(User)
+        private readonly userRepository: Repository<User>,
+        
     @InjectRepository(Counselor)
     private readonly counselorRepository: Repository<Counselor>,
 
     @InjectRepository(Article)
     private readonly articleRepository: Repository<Article>,
+
+private readonly notificationService: NotificationService,
+
   ) {}
 
   async create(dto: CreateArticleDto, counselorId: string): Promise<Article> {
-    const counselor = await this.counselorRepository.findOne({
-      where: {
-        userId: counselorId,
-      },
-    });
-    if (!counselor) {
-      throw new NotFoundException('Counselor not found');
-    }
+  const counselor = await this.counselorRepository.findOne({
+    where: { userId: counselorId },
+    relations: ['user'], // 👈 Needed to access counselor.user.firstName etc.
+  });
 
-    const article = this.articleRepository.create({
-      ...dto,
-      counselor,
-    });
-    return this.articleRepository.save(article);
+  if (!counselor) {
+    throw new NotFoundException('Counselor not found');
   }
+
+  const article = this.articleRepository.create({
+    ...dto,
+    counselor,
+  });
+
+  // ✅ Fetch users by Role enum if defined
+  const clients = await this.userRepository.find({ where: { role: Role.CLIENT } });
+  const admins = await this.userRepository.find({ where: { role: Role.ADMIN } });
+
+  const counselorName = `${counselor.user.firstName} ${counselor.user.lastName}`;
+
+  for (const client of clients) {
+    await this.notificationService.sendNotification({
+      recipientId: client.id,
+      role: 'CLIENT',
+      message: 'New article posted by a counselor. Check it out!',
+      type: 'SYSTEM',
+    });
+  }
+
+  for (const admin of admins) {
+    await this.notificationService.sendNotification({
+      recipientId: admin.id,
+      role: 'ADMIN',
+      message: `A new post has been created by ${counselorName}.`,
+      type: 'SYSTEM',
+    });
+  }
+
+  return this.articleRepository.save(article);
+}
 
   // async findAll(): Promise<Article[]> {
   //   return await this.articleRepository.find();

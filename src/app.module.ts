@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { CounselorModule } from './counselor/counselor.module';
 import { SeederService } from './seeder/seeder.service';
 import {AdminModule} from './admin/admin.module'
+import { NotificationModule } from './Notification/notification.module';
 @Module({
   imports: [
       
@@ -28,7 +29,8 @@ import {AdminModule} from './admin/admin.module'
     ClientModule,
     AuthModule,
     CounselorModule,
-    AdminModule
+    AdminModule,
+    NotificationModule
   ],
   controllers: [AppController],
   providers: [AppService, SeederService],
