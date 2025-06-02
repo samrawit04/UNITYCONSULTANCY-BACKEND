@@ -19,6 +19,13 @@ export class ClientService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  async findByUserId(userId: string): Promise<Client | null> {
+    return this.clientRepository.findOne({
+      where: { userId },
+      relations: ['user', 'bookings', 'payments'],
+    });
+  }
+
   async completeProfile(dto: CompleteClientProfileDto): Promise<Client> {
     const user = await this.userRepository.findOne({
       where: { id: dto.userId },
@@ -29,7 +36,9 @@ export class ClientService {
     }
 
     if (user.role !== 'CLIENT') {
-      throw new ForbiddenException('Only clients can complete a client profile');
+      throw new ForbiddenException(
+        'Only clients can complete a client profile',
+      );
     }
 
     let client = await this.clientRepository.findOne({
@@ -53,7 +62,7 @@ export class ClientService {
   async getClientById(userId: string): Promise<Client> {
     const client = await this.clientRepository.findOne({
       where: { userId },
-      relations: ['user'],
+      relations: ['user', 'bookings', 'payments'],
     });
 
     if (!client) {

@@ -29,9 +29,10 @@ import { NotificationModule } from '../Notification/notification.module';
     PassportModule.register({ session: true }),
     ClientModule,
     CounselorModule,
+    PassportModule,
     NotificationModule
   ],
-  controllers: [UserController, ],
+  controllers: [UserController],
   providers: [
     UserService,
     AuthService,

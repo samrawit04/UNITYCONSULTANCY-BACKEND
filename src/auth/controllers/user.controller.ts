@@ -16,8 +16,10 @@ export class UserController {
   async createAccount(@Body() createUserDto: CreateUserDto) {
     try {
       const result = await this.userService.createAccount(createUserDto);
-      return { success: true, verificationId: result.verificationId };
-      
+      return {
+        success: true,
+        verificationId: result.verificationId,
+      };
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -27,7 +29,7 @@ export class UserController {
   async resendOtp(@Body() payload: ResendOtpDto) {
     return this.userService.resendOtp(payload);
   }
-  
+
   @Post('verifyAccount')
   async verifyAccount(@Body() verifyAccountDto: VerifyAccountDto) {
     return this.userService.verifyAccount(verifyAccountDto);
@@ -39,7 +41,7 @@ export class UserController {
       const token = await this.userService.login(loginDto);
       return { success: true, token };
     } catch (error) {
-         console.error('Login error:', error);
+      console.error('Login error:', error);
       throw new BadRequestException(error.message);
     }
   }

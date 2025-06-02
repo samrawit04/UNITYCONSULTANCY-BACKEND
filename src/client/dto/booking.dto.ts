@@ -2,7 +2,7 @@ import { IsNotEmpty, IsEmail, IsString, IsNumber } from 'class-validator';
 
 export class CreateBookingDto {
   @IsNotEmpty()
-  @IsNumber()
+  @IsString()
   scheduleId: string;
 
   @IsNotEmpty()

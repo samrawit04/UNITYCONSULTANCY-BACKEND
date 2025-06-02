@@ -8,11 +8,24 @@ import { CounselorModule } from 'src/counselor/counselor.module';
 import { Booking } from './entities/booking.entity';
 import { BookingController } from './controllers/booking.controller';
 import { BookingService } from './services/booking.servicee';
+import { PaymentController } from './controllers/payment.controller';
+import { PaymentService } from './services/payment.service';
+import { HttpModule } from '@nestjs/axios';
+import { Payment } from './entities/payment.entity';
+import passport from 'passport';
+import { PassportModule } from '@nestjs/passport';
+import { ZoomService } from 'src/counselor/service/zoom.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Client,Booking]), UserModule, CounselorModule],
-  controllers: [ClientController,BookingController],
-  providers: [ClientService,BookingService],
+  imports: [
+    TypeOrmModule.forFeature([Client, Booking, Payment]),
+    UserModule,
+    CounselorModule,
+    HttpModule,
+    PassportModule,
+  ],
+  controllers: [ClientController, BookingController, PaymentController],
+  providers: [ClientService, BookingService, PaymentService,ZoomService],
   exports: [TypeOrmModule],
 })
 export class ClientModule {}

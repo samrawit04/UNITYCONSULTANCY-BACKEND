@@ -8,16 +8,27 @@ import {
   UploadedFile,
   UsePipes,
   ValidationPipe,
+  NotFoundException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { ClientService } from '../services/client.serivice';
 import { CompleteClientProfileDto } from '../dto/complete-client-profile.dto';
+import { Client } from '../entities/client.entity';
 
 @Controller('clients')
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
+
+  @Get(':id')
+  async getClient(@Param('id') id: string): Promise<Client> {
+    const client = await this.clientService.findByUserId(id);
+    if (!client) {
+      throw new NotFoundException('Client not found');
+    }
+    return client;
+  }
 
   @Patch('complete-profile')
   @UseInterceptors(
@@ -25,7 +36,8 @@ export class ClientController {
       storage: diskStorage({
         destination: './uploads/profile-pictures',
         filename: (req, file, cb) => {
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
           const ext = extname(file.originalname);
           cb(null, `profilePicture-${uniqueSuffix}${ext}`);
         },
@@ -33,7 +45,10 @@ export class ClientController {
       limits: { fileSize: 5 * 1024 * 1024 }, // Max 5MB
       fileFilter: (req, file, cb) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
-          return cb(new Error('Only image files are allowed for profilePicture'), false);
+          return cb(
+            new Error('Only image files are allowed for profilePicture'),
+            false,
+          );
         }
         cb(null, true);
       },

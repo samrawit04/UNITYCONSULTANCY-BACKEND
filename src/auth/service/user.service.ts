@@ -123,7 +123,11 @@ private readonly notificationService: NotificationService,
         userId: savedUser.id,
       });
 
-      await this.clientRepository.save(client);
+      await this.clientRepository.save({
+        userId: user.id,
+        client,
+      });
+
     } else if (role === Role.COUNSELOR) {
       const counselor = this.counselorRepository.create({
         userId: savedUser.id,
@@ -193,18 +197,17 @@ private readonly notificationService: NotificationService,
     return { accountVerification, otp };
   }
 
- async updateAccountStatus(userId: string, status: 'ACTIVE' | 'INACTIVE') {
-  const user = await this.userRepository.findOne({ where: { id: userId } });
-  if (!user) throw new NotFoundException('User not found');
+  async updateAccountStatus(userId: string, status: 'ACTIVE' | 'INACTIVE') {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
 
-  user.status = status;
-  return this.userRepository.save(user);
-}
+    user.status = status;
+    return this.userRepository.save(user);
+  }
 
-async countByRole(role: Role): Promise<number> {
-  return this.userRepository.count({ where: { role } });
-}
-
+  async countByRole(role: Role): Promise<number> {
+    return this.userRepository.count({ where: { role } });
+  }
 
   // Generate OTP
   public generateOpt(): string {
@@ -346,35 +349,34 @@ async countByRole(role: Role): Promise<number> {
   }
 
   public async verifyAccount(body: VerifyAccountDto) {
-  const { verificationId, otp, isOtp }: VerifyAccountDto = body;
+    const { verificationId, otp, isOtp }: VerifyAccountDto = body;
 
-  // Verify OTP and get the user account
-  const account = await this.verifyOTP(verificationId, otp, isOtp);
+    // Verify OTP and get the user account
+    const account = await this.verifyOTP(verificationId, otp, isOtp);
 
-  // Activate the account
-  account.status = AccountStatusEnum.ACTIVE;
-  await this.userRepository.update(account.id, account);
+    // Activate the account
+    account.status = AccountStatusEnum.ACTIVE;
+    await this.userRepository.update(account.id, account);
 
-  // Prepare payload for JWT token
-  const tokenPayload = {
-    id: account.id,
-    email: account.email,
-  };
+    // Prepare payload for JWT token
+    const tokenPayload = {
+      id: account.id,
+      email: account.email,
+    };
 
-  // Generate access and refresh tokens
-  const token: LoginResponseDto = {
-    access_token: this.helper.generateAccessToken(tokenPayload),
-    refresh_token: this.helper.generateRefreshToken({ id: account.id }),
-  };
+    // Generate access and refresh tokens
+    const token: LoginResponseDto = {
+      access_token: this.helper.generateAccessToken(tokenPayload),
+      refresh_token: this.helper.generateRefreshToken({ id: account.id }),
+    };
 
-  // Return success message, role, and tokens
-  return {
-    message: 'Account successfully verified and activated.',
-    role: account.role,
-    token,  // <-- Include tokens here
-  };
-}
-
+    // Return success message, role, and tokens
+    return {
+      message: 'Account successfully verified and activated.',
+      role: account.role,
+      token, // <-- Include tokens here
+    };
+  }
 
   private async verifyOTP(
     verificationId: string,
@@ -481,6 +483,7 @@ async countByRole(role: Role): Promise<number> {
     return {
       token,
       role: user.role,
+      id: user.id,
     };
   }
 
