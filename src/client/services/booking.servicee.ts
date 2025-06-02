@@ -186,13 +186,7 @@ export class BookingService {
         },
       },
     });
-    return returnedData.map((datas) => ({
-      zoomJoinUrl: datas.zoomJoinUrl,
-      counselorId: datas.schedule.counselorId,
-      date: datas.schedule.date,
-      startTime: datas.schedule.startTime,
-      endTime: datas.schedule.endTime,
-    }));
+    return returnedData;
   }
 
   async getBookingById(id: string): Promise<Booking> {
