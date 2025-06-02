@@ -10,10 +10,10 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CounselorModule } from './counselor/counselor.module';
 import { SeederService } from './seeder/seeder.service';
-import {AdminModule} from './admin/admin.module'
+import { AdminModule } from './admin/admin.module';
+import { HttpModule } from '@nestjs/axios';
 @Module({
   imports: [
-      
     TypeOrmModule.forRootAsync({ useFactory: () => dataSourceOptions }),
     ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.registerAsync({
@@ -24,11 +24,12 @@ import {AdminModule} from './admin/admin.module'
         },
       }),
     }),
+    HttpModule,
     UserModule,
     ClientModule,
     AuthModule,
     CounselorModule,
-    AdminModule
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeederService],

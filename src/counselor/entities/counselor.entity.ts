@@ -11,6 +11,7 @@ import { PreferredPaymentMethod } from 'src/shared/enums';
 import { Article } from './article.entity';
 import { Schedule } from './schedule.entity';
 import { Review } from './review.entity';
+import { Payment } from 'src/client/entities/payment.entity';
 
 @Entity()
 export class Counselor {
@@ -69,7 +70,9 @@ export class Counselor {
   schedules: Schedule[];
 
   // counselor.entity.ts
-@OneToMany(() => Review, (review) => review.counselor)
-reviews: Review[];
+  @OneToMany(() => Review, (review) => review.counselor)
+  reviews: Review[];
 
+  @OneToMany(() => Payment, (payment) => payment.counselor)
+  payments: Payment[];
 }

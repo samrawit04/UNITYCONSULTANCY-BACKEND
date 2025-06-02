@@ -11,6 +11,7 @@ import { Gender, MaritalStatus } from 'src/shared/enums';
 
 import { Booking } from './booking.entity';
 import { Review } from 'src/counselor/entities/review.entity';
+import { Payment } from './payment.entity';
 
 @Entity()
 export class Client {
@@ -44,7 +45,12 @@ export class Client {
 
   @OneToMany(() => Booking, (booking) => booking.client)
   bookings: Booking[];
-  // client.entity.ts
+
+  
   @OneToMany(() => Review, (review) => review.client)
   reviews: Review[];
+
+  @OneToMany(() => Payment, (payment) => payment.client)
+  payments: Payment[];
+ 
 }

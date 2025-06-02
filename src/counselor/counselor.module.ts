@@ -15,11 +15,16 @@ import { Schedule } from './entities/schedule.entity';
 import { ScheduleController } from './controllers/schedule.controller';
 import { ScheduleService } from './service/schedule.service';
 import { Review } from './entities/review.entity';
+import { PassportModule } from '@nestjs/passport';
+import { HttpModule } from '@nestjs/axios';
+import { ZoomService } from './service/zoom.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Counselor, Client, Article, Schedule, Review]),
 
     UserModule,
+    PassportModule,
+    HttpModule,
   ],
   controllers: [
     CounselorController,
@@ -27,7 +32,13 @@ import { Review } from './entities/review.entity';
     ArticleController,
     ScheduleController,
   ],
-  providers: [CounselorService, ReviewService, ArticleService, ScheduleService],
+  providers: [
+    CounselorService,
+    ReviewService,
+    ArticleService,
+    ScheduleService,
+    ZoomService,
+  ],
   exports: [TypeOrmModule],
 })
 export class CounselorModule {}

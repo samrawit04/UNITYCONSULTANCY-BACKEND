@@ -9,6 +9,22 @@ Content-Type: application/json
     "role":"CLIENT"
 }
 
+
+### Get bookings by clientId
+GET http://localhost:3000/api/clientbooking/f35a4d7c-979f-493d-b032-aa91a1b984eb
+Accept: application/json
+
+
+###zoom
+POST http://localhost:3000/api/bookings
+Content-Type: application/json
+
+{
+  "scheduleId": "7605a9fd-c3fa-4c70-9974-4331d5900d44",
+  "clientId": "f35a4d7c-979f-493d-b032-aa91a1b984eb"
+}
+
+
 ### update counselor profile
 PATCH http://localhost:3000/counselors/complete-profile
 Content-Type: application/json
@@ -71,10 +87,10 @@ Content-Type: application/json
 }
 
 ### see counselors rating in profile
-GET http://localhost:3000/counselors/profile/b04d56b7-bc30-4280-a287-d754156a0ee2
+GET http://localhost:3000/clients/f35a4d7c-979f-493d-b032-aa91a1b984eb
 
 
-### update client profile
+### update client profile 
 PATCH http://localhost:3000/client/complete-profile
 Content-Type: application/json
 
@@ -116,7 +132,7 @@ Content-Type: application/json
 
 {
     "email": "lidiyafiker09@gmail.com",
-    "password": "newlidiya"
+    "password": "lidiya"
 }
 
 
@@ -127,6 +143,18 @@ Content-Type: application/json
 
 {
   "email": "lidiyafiker09@gmail.com"
+}
+
+### payment
+POST http://localhost:3000/payment/initialize
+Content-Type: application/json
+
+{
+  "amount": "200",
+  "email": "lidiyafiker09@gmail.com",
+  "firstName": "Test",
+  "lastName": "User",
+  "transactionReference": "tx-123456789"
 }
 
 
@@ -189,5 +217,12 @@ Content-Type: application/json
 DELETE http://localhost:3000/articles/fd7f58d4-8a0a-4488-a40d-047348c1b41b
 
 
+###reschedule
+POST http://localhost:3000/api/rebook
+Content-Type: application/json
 
-# b04d56b7-bc30-4280-a287-d754156a0ee2
+{
+  "oldBookingId": "d83e9f84-7608-4e73-9985-faf3069d1b54",
+  "newScheduleId": "04921c44-a789-4a03-9eea-b46232a00903",
+  "clientId": "f35a4d7c-979f-493d-b032-aa91a1b984eb"
+}

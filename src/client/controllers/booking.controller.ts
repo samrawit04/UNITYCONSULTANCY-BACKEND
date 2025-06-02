@@ -11,6 +11,7 @@ import {
 import { CreateBookingDto } from '../dto/booking.dto';
 import { BookingService } from '../services/booking.servicee';
 import { TimeSlot } from '../booking.types';
+import { RebookDto } from '../dto/rebook.dto';
 
 @Controller('api')
 export class BookingController {
@@ -19,6 +20,11 @@ export class BookingController {
   @Post('bookings')
   create(@Body() createBookingDto: CreateBookingDto) {
     return this.bookingService.create(createBookingDto);
+  }
+  @Post('rebook')
+  async rebook(@Body() rebookDto: RebookDto) {
+    const { oldBookingId, newScheduleId, clientId } = rebookDto;
+    return this.bookingService.rebook(oldBookingId, newScheduleId, clientId);
   }
 
   @Get('slots')
@@ -29,9 +35,9 @@ export class BookingController {
     return this.bookingService.getAvailableSlots(date, counselorId);
   }
 
-  @Get('bookings/client')
-  getClientBookings(@Query('email') email: string) {
-    return this.bookingService.getBookingsByClient(email);
+  @Get('clientbooking/:clientId')
+  async getBookingsByClient(@Param('clientId') clientId: string) {
+    return this.bookingService.getBookingsByClient(clientId);
   }
 
   @Get('bookings/:id')

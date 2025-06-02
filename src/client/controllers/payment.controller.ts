@@ -1,18 +1,29 @@
-// payment.controller.ts
-import { Controller, Post, Body, Param } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, UseGuards } from '@nestjs/common';
+
+import { AuthGuard } from '@nestjs/passport';
 import { PaymentService } from '../services/payment.service';
-import { Payment } from '../entities/payment.entity';
+import { GetUser } from '../get-user.decorators';
+import { CreatePaymentDto } from '../dto/payment.dto';
 
-
-@Controller('payments')
+@Controller('payment')
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
+  constructor(private paymentService: PaymentService) {}
 
-  @Post(':clientId')
+  @Post('initialize')
   async createPayment(
-    @Param('clientId') clientId: string,
-    @Body() paymentData: Partial<Payment>,
-  ): Promise<Payment> {
-    return this.paymentService.create(paymentData, clientId);
+    @Body() createPaymentDto: CreatePaymentDto,
+    @GetUser() user: any,
+  ) {
+    return this.paymentService.createPayment(createPaymentDto);
+  }
+
+  @Get('verify/:txRef')
+  async verifyPayment(@Param('txRef') txRef: string) {
+    return this.paymentService.verifyPayment(txRef);
+  }
+
+  @Get(':txRef')
+  async getPayment(@Param('txRef') txRef: string) {
+    return this.paymentService.getPaymentByTxRef(txRef);
   }
 }

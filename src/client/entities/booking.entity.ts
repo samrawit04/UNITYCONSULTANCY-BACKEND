@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   CreateDateColumn,
+  JoinColumn,
 } from 'typeorm';
 import { Schedule } from 'src/counselor/entities/schedule.entity';
 import { Counselor } from 'src/counselor/entities/counselor.entity';
@@ -14,12 +15,12 @@ export class Booking {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Schedule)
+  @ManyToOne(() => Schedule, (schedule) => schedule.bookings)
+  @JoinColumn({ name: 'scheduleId' })
   schedule: Schedule;
 
   @Column()
   scheduleId: string;
-
 
   @ManyToOne(() => Client, (client) => client.bookings)
   client: Client;
@@ -29,4 +30,10 @@ export class Booking {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @Column({ nullable: true })
+  zoomJoinUrl: string;
+
+  @Column({ nullable: true })
+  zoomStartUrl: string;
 }

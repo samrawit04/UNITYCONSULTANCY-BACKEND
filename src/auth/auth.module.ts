@@ -28,8 +28,9 @@ import { CounselorModule } from 'src/counselor/counselor.module';
     PassportModule.register({ session: true }),
     ClientModule,
     CounselorModule,
+    PassportModule,
   ],
-  controllers: [UserController, ],
+  controllers: [UserController],
   providers: [
     UserService,
     AuthService,

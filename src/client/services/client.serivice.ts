@@ -22,7 +22,7 @@ export class ClientService {
   async findByUserId(userId: string): Promise<Client | null> {
     return this.clientRepository.findOne({
       where: { userId },
-      relations: ['user', 'ratings', 'bookings', 'payments'],
+      relations: ['user', 'bookings', 'payments'],
     });
   }
 
@@ -62,7 +62,7 @@ export class ClientService {
   async getClientById(userId: string): Promise<Client> {
     const client = await this.clientRepository.findOne({
       where: { userId },
-      relations: ['user', 'ratings', 'bookings', 'payments'],
+      relations: ['user', 'bookings', 'payments'],
     });
 
     if (!client) {
