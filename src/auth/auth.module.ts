@@ -15,10 +15,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { ClientModule } from 'src/client/client.module';
 import { Counselor } from 'src/counselor/entities/counselor.entity';
 import { CounselorModule } from 'src/counselor/counselor.module';
-
+import { NotificationModule } from '../Notification/notification.module';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Audit, AccountVerification, Counselor]), // TypeORM entities
+    TypeOrmModule.forFeature([User, Audit, AccountVerification, Counselor]),
+     // TypeORM entities
     JwtModule.register({
       secret: process.env.JWT_ACCESS_TOKEN_SECRET, // JWT secret
       signOptions: {
@@ -29,6 +30,7 @@ import { CounselorModule } from 'src/counselor/counselor.module';
     ClientModule,
     CounselorModule,
     PassportModule,
+    NotificationModule
   ],
   controllers: [UserController],
   providers: [

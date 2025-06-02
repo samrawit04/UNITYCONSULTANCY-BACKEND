@@ -8,7 +8,11 @@ import { Article } from './counselor/entities/article.entity';
 import { Schedule } from './counselor/entities/schedule.entity';
 import { Booking } from './client/entities/booking.entity';
 import { Review } from './counselor/entities/review.entity';
+
 import { Payment } from './client/entities/payment.entity';
+
+import { Notification } from './Notification/entities/notification.entity';
+
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
@@ -20,6 +24,7 @@ export const dataSourceOptions: DataSourceOptions = {
   synchronize: true,
   logging: true,
   entities: [
+
     User,
     Client,
     AccountVerification,
@@ -30,8 +35,14 @@ export const dataSourceOptions: DataSourceOptions = {
     Article,
     Schedule,
     Booking,
+
+    User,Client,AccountVerification,Article,Booking,Counselor,Schedule,Review,Notification
   ],
-  migrations: ['src/migrations/**/*.ts'],
+  migrations: [
+    'src/migrations/**/*.ts'
+
+  ],
+
   subscribers: [],
 };
 

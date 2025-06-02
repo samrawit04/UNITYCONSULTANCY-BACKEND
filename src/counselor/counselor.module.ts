@@ -18,10 +18,13 @@ import { Review } from './entities/review.entity';
 import { PassportModule } from '@nestjs/passport';
 import { HttpModule } from '@nestjs/axios';
 import { ZoomService } from './service/zoom.service';
+
+import { NotificationModule } from '../Notification/notification.module';
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([Counselor, Client, Article, Schedule, Review]),
-
+    NotificationModule,
     UserModule,
     PassportModule,
     HttpModule,

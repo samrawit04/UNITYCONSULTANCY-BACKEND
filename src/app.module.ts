@@ -10,8 +10,12 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CounselorModule } from './counselor/counselor.module';
 import { SeederService } from './seeder/seeder.service';
+
 import { AdminModule } from './admin/admin.module';
 import { HttpModule } from '@nestjs/axios';
+
+import { NotificationModule } from './Notification/notification.module';
+
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({ useFactory: () => dataSourceOptions }),
@@ -30,6 +34,7 @@ import { HttpModule } from '@nestjs/axios';
     AuthModule,
     CounselorModule,
     AdminModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeederService],
