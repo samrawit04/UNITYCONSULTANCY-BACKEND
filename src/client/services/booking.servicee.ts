@@ -95,6 +95,8 @@ export class BookingService {
     }
 
     // Remove old booking
+
+    const oldScheduleId = oldBooking.schedule?.id;
     await this.bookingRepository.remove(oldBooking);
 
     // Mark new schedule as unavailable (booked)
@@ -122,18 +124,20 @@ export class BookingService {
       where: { id: newScheduleId },
     });
 
-    // Create Zoom meeting
-    const zoomMeeting = await this.zoomService.createMeeting({
-      topic: 'Counseling Session',
-      startTime: new Date(
-        `${new Date(schedule.date).toISOString().split('T')[0]}T${schedule.startTime}`,
-      ).toISOString(),
-      duration: 60, // or adjust based on your logic
-    });
-
-    // Update booking with Zoom info
-    savedBooking.zoomJoinUrl = zoomMeeting.join_url;
-    savedBooking.zoomStartUrl = zoomMeeting.start_url;
+    try {
+      const zoomMeeting = await this.zoomService.createMeeting({
+        topic: 'Counseling Session',
+        startTime: new Date(
+          `${new Date(schedule.date).toISOString().split('T')[0]}T${schedule.startTime}`,
+        ).toISOString(),
+        duration: 60,
+      });
+      savedBooking.zoomJoinUrl = zoomMeeting.join_url;
+      savedBooking.zoomStartUrl = zoomMeeting.start_url;
+    } catch (error) {
+      console.error('Zoom API call failed:', error.message);
+      // handle fallback or throw custom error
+    }
 
     await this.bookingRepository.save(savedBooking);
 
@@ -141,8 +145,8 @@ export class BookingService {
     const payment = await this.paymentRepository.findOne({
       where: {
         clientId,
-        scheduleId: oldBooking.schedule.id,
-        status: 'success', // or your business logic for completed payment
+        scheduleId: oldScheduleId,
+        status: 'success',
       },
     });
 
@@ -151,6 +155,7 @@ export class BookingService {
       await this.paymentRepository.save(payment);
     }
 
+    console.log('Rebooking from', oldBookingId, 'to', newScheduleId);
     return savedBooking;
   }
 
