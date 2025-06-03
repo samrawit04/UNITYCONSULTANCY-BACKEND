@@ -18,9 +18,15 @@ import { NotificationModule } from './Notification/notification.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync({ useFactory: () => dataSourceOptions }),
+    TypeOrmModule.forRootAsync({
+      imports: [], // ✅ Required
+      useFactory: () => dataSourceOptions,
+    }),
+
     ConfigModule.forRoot({ isGlobal: true }),
+
     JwtModule.registerAsync({
+      imports: [], // ✅ Required
       useFactory: async () => ({
         secret: process.env.JWT_ACCESS_TOKEN_SECRET,
         signOptions: {
@@ -28,6 +34,7 @@ import { NotificationModule } from './Notification/notification.module';
         },
       }),
     }),
+
     HttpModule,
     UserModule,
     ClientModule,
@@ -40,3 +47,4 @@ import { NotificationModule } from './Notification/notification.module';
   providers: [AppService, SeederService],
 })
 export class AppModule {}
+

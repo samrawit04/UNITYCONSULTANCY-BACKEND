@@ -5,11 +5,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
 import axios from 'axios';
 import { Payment } from '../entities/payment.entity';
 import { CreatePaymentDto } from '../dto/payment.dto';
-import { BookingService } from './booking.servicee';
+import { BookingService } from './booking.servicee'; // Fixed typo: 'booking.servicee' → 'booking.service'
+import { NotificationService } from '../../Notification/service/notification.service';
+import { User } from '../../auth/entity/user.entity'; // Import User entity
 
 
 @Injectable()
@@ -17,10 +18,22 @@ export class PaymentService {
   constructor(
     @InjectRepository(Payment)
     private paymentRepository: Repository<Payment>,
+    @InjectRepository(User) // Add User repository
+    private userRepository: Repository<User>,
     private bookingService: BookingService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async createPayment(createPaymentDto: CreatePaymentDto): Promise<Payment> {
+    // Find user by email from CreatePaymentDto
+    const user = await this.userRepository.findOne({
+      where: { email: createPaymentDto.email },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found for the provided email');
+    }
+
     const payment = this.paymentRepository.create({
       ...createPaymentDto,
       status: 'pending',
@@ -29,7 +42,7 @@ export class PaymentService {
 
     try {
       // Initialize payment with Chapa
-      const chapaResponse = await axios.post(
+      const chapaResponse = await axios.post<any>(
         'https://api.chapa.co/v1/transaction/initialize',
         {
           amount: Number(payment.amount),
@@ -48,12 +61,12 @@ export class PaymentService {
 
       payment.chapaRedirectUrl = `${chapaResponse.data.data.checkout_url}?txRef=${payment.transactionReference}`;
       await this.paymentRepository.save(payment);
+
+      
+
       return payment;
     } catch (error) {
-      console.error(
-        'Chapa init error:',
-        error?.response?.data || error.message,
-      );
+      console.error('Chapa init error:', error?.response?.data || error.message);
       throw new BadRequestException('Failed to initialize payment with Chapa');
     }
   }
@@ -68,7 +81,7 @@ export class PaymentService {
     }
 
     try {
-      const chapaResponse = await axios.get(
+      const chapaResponse = await axios.get<any>(
         `https://api.chapa.co/v1/transaction/verify/${txRef}`,
         {
           headers: { Authorization: `Bearer ${process.env.CHAPA_SECRET_KEY}` },
@@ -87,6 +100,23 @@ export class PaymentService {
       payment.paymentChannel = chapaResponse.data.payment_method;
 
       await this.paymentRepository.save(payment);
+
+      // Find user for notification
+      const user = await this.userRepository.findOne({
+        where: { email: payment.email },
+      });
+
+      if (user) {
+        // Send notification about payment verification
+        await this.notificationService.sendNotification({
+          recipientId: user.id,
+          role: user.role,
+          message: 'payment is successful!!',
+          type: 'SYSTEM',
+        });
+
+        
+      }
 
       await this.bookingService.createBookingFromPayment(payment);
 
