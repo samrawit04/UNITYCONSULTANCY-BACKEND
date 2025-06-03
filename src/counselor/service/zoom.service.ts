@@ -2,7 +2,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-
+import { NotificationService } from '../../Notification/service/notification.service';
 @Injectable()
 export class ZoomService {
   private readonly logger = new Logger(ZoomService.name);
@@ -11,7 +11,10 @@ export class ZoomService {
   private clientSecret = process.env.ZOOM_CLIENT_SECRET;
   private accountId = process.env.ZOOM_ACCOUNT_ID;
 
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly httpService: HttpService, 
+    private readonly notificationService: NotificationService,
+
+) {}
 
   private async getAccessToken(): Promise<string> {
     const auth = Buffer.from(`${this.clientId}:${this.clientSecret}`).toString(
@@ -69,6 +72,7 @@ export class ZoomService {
         },
       ),
     );
+
 
     return {
       join_url: data.join_url,

@@ -15,7 +15,7 @@ import { Payment } from './entities/payment.entity';
 import passport from 'passport';
 import { PassportModule } from '@nestjs/passport';
 import { ZoomService } from 'src/counselor/service/zoom.service';
-
+import { NotificationModule } from 'src/Notification/notification.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Client, Booking, Payment]),
@@ -23,6 +23,7 @@ import { ZoomService } from 'src/counselor/service/zoom.service';
     CounselorModule,
     HttpModule,
     PassportModule,
+    NotificationModule
   ],
   controllers: [ClientController, BookingController, PaymentController],
   providers: [ClientService, BookingService, PaymentService,ZoomService],
