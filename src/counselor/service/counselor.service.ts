@@ -85,7 +85,6 @@ export class CounselorService {
   };
 }
 
-
   async approveCounselor(userId: string): Promise<Counselor> {
     const counselor = await this.counselorRepository.findOne({
       where: { userId },
@@ -132,7 +131,6 @@ async findApprovedAndActive() {
       specialization: c.specialization,
     }));
 }
-
 
 
 

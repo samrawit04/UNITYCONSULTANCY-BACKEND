@@ -12,6 +12,7 @@ import { Payment } from '../entities/payment.entity';
 import { ZoomService } from 'src/counselor/service/zoom.service';
 import { NotificationService } from '../../Notification/service/notification.service';
 import { User } from '../../auth/entity/user.entity'; // Import User entity
+import { Client } from '../entities/client.entity';
 
 interface TimeSlot {
   id: string;
@@ -32,6 +33,8 @@ export class BookingService {
     private paymentRepository: Repository<Payment>,
 @InjectRepository(User)
 private userRepository: Repository<User>,
+@InjectRepository(Client)
+    private clientRepository: Repository<Client>,
     private readonly notificationService: NotificationService,
   ) {}
 
@@ -195,7 +198,7 @@ private userRepository: Repository<User>,
       } else {
         throw new NotFoundException('No payment found for the old booking');
       }
-
+ 
       // Send notification to the user
       const user = await transactionalEntityManager.findOne(User, {
         where: { id: clientId },
@@ -244,7 +247,7 @@ async getBookingsByClient(clientId: string) {
     relations: {
       schedule: {
         counselor: {
-          user: true, // Ensure user relation is loaded
+          user: true,
         },
       },
     },
@@ -252,9 +255,10 @@ async getBookingsByClient(clientId: string) {
 
   return bookings.map((booking) => ({
     id: booking.id,
+    clientId: booking.clientId, // Add clientId
     date: booking.schedule?.date,
     startTime: booking.schedule?.startTime,
-    endTime: booking.schedule?.endTime,
+    endTime: booking.schedule?.startTime,
     zoomJoinUrl: booking.zoomJoinUrl,
     counselor: booking.schedule?.counselor
       ? {
@@ -262,6 +266,7 @@ async getBookingsByClient(clientId: string) {
           firstName: booking.schedule.counselor.user?.firstName || "Unknown",
           lastName: booking.schedule.counselor.user?.lastName || "",
           image: booking.schedule.counselor.profilePicture || null,
+          specialization: booking.schedule.counselor.specialization || "Counselor",
         }
       : null,
   }));
@@ -343,4 +348,67 @@ async getBookingsByClient(clientId: string) {
 
     return this.bookingRepository.save(savedBooking);
   }
+
+  async getCounselorBookings(counselorId: string): Promise<any[]> {
+  const bookings = await this.bookingRepository
+    .createQueryBuilder('booking')
+    .leftJoinAndSelect('booking.schedule', 'schedule')
+    .leftJoinAndSelect('booking.client', 'client')
+    .leftJoinAndSelect('client.user', 'user')
+    .where('schedule.counselorId = :counselorId', { counselorId })
+    .andWhere('schedule.isAvailable = :isAvailable', { isAvailable: false })
+    .getMany();
+
+  console.log('Raw bookings:', JSON.stringify(bookings, null, 2));
+
+  return await Promise.all(
+    bookings.map(async (booking) => {
+      let clientData = {
+        id: booking.clientId || '',
+        firstName: booking.client?.user?.firstName || 'Unknown',
+        lastName: booking.client?.user?.lastName || '',
+        image: booking.client?.profilePicture || null,
+      };
+
+      // Fallback: Fetch client and user directly if relation is missing
+      if (booking.clientId && (!booking.client || !booking.client.user)) {
+        const client = await this.clientRepository.findOne({
+          where: { userId: booking.clientId },
+          relations: ['user'],
+        });
+        if (client) {
+          clientData = {
+            id: client.userId,
+            firstName: client.user?.firstName || 'Unknown',
+            lastName: client.user?.lastName || '',
+            image: client.profilePicture || null,
+          };
+        } else {
+          // Fallback: Fetch user directly if client is missing
+          const user = await this.userRepository.findOne({
+            where: { id: booking.clientId },
+          });
+          if (user) {
+            clientData = {
+              id: user.id,
+              firstName: user.firstName || 'Unknown',
+              lastName: user.lastName || '',
+              image: null,
+            };
+          }
+        }
+      }
+
+      return {
+        id: booking.id,
+        date: booking.schedule?.date || null,
+        startTime: booking.schedule?.startTime || null,
+        endTime: booking.schedule?.endTime || null,
+        zoomStartUrl: booking.zoomStartUrl || null,
+        client: clientData,
+      };
+    }),
+  );
 }
+}
+

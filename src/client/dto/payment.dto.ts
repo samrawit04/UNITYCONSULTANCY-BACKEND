@@ -1,28 +1,27 @@
-// create-payment.dto.ts
-import { IsNotEmpty, IsString, IsEmail } from 'class-validator';
+import { IsString, IsNumber, IsEmail } from 'class-validator';
 
 export class CreatePaymentDto {
-  @IsNotEmpty()
-  amount: string;
+  @IsString()
+  firstName: string;
+
+  @IsString()
+  lastName: string;
 
   @IsEmail()
   email: string;
 
-  @IsNotEmpty()
-  firstName: string;
+  @IsNumber()
+  amount: number;
 
-  @IsNotEmpty()
-  lastName: string;
-
-  @IsNotEmpty()
+  @IsString()
   clientId: string;
 
-  @IsNotEmpty()
-  scheduleId: string;
-
-  @IsNotEmpty()
+  @IsString()
   counselorId: string;
 
-  @IsNotEmpty()
+  @IsString()
+  scheduleId: string;
+
+  @IsString()
   transactionReference: string;
 }

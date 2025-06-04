@@ -6,6 +6,7 @@ import {
   Param,
   Query,
   ParseIntPipe,
+  UnauthorizedException,
 } from '@nestjs/common';
 
 import { CreateBookingDto } from '../dto/booking.dto';
@@ -44,4 +45,19 @@ export class BookingController {
   getBooking(@Param('id', ParseIntPipe) id: string) {
     return this.bookingService.getBookingById(id);
   }
+
+  
+
+
+  @Get('counselorbooking/:counselorId')
+  async getCounselorBookings(
+    @Param('counselorId') counselorId: string,
+    // @Headers('Authorization') authHeader: string,
+  ) {
+    // if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    //   throw new UnauthorizedException('Invalid or missing token');
+    // }
+    return await this.bookingService.getCounselorBookings(counselorId);
+  }
 }
+

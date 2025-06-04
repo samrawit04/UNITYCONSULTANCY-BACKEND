@@ -1,70 +1,60 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-} from 'typeorm';
-import { Client } from './client.entity';
-import { Counselor } from 'src/counselor/entities/counselor.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import { Client } from '../../client/entities/client.entity';
+import { Counselor } from '../../counselor/entities/counselor.entity';
 
 @Entity()
 export class Payment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ type: 'varchar' })
+  transactionReference: string;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  amount: number;
+
+  @Column({ type: 'varchar' })
+  email: string;
+
+  @Column({ type: 'varchar' })
+  firstName: string;
+
+  @Column({ type: 'varchar' })
+  lastName: string;
+
+  @Column({ type: 'varchar' })
+  clientId: string;
+
   @ManyToOne(() => Client, (client) => client.payments)
   client: Client;
 
-  @Column({ nullable: true })
-  clientId: string;
-
-  @Column({ nullable: true })
-  scheduleId: string;
+  @Column({ type: 'varchar' })
+  counselorId: string;
 
   @ManyToOne(() => Counselor, (counselor) => counselor.payments)
   counselor: Counselor;
 
-  @Column({ nullable: true })
-  counselorId: string;
+  @Column({ type: 'varchar' })
+  scheduleId: string;
 
-  @Column({ nullable: true })
-  amount: string;
+  @Column({ type: 'varchar', nullable: true })
+  chapaCheckoutUrl: string;
 
-  @Column({ nullable: true })
-  email: string;
-
-  @Column({ nullable: true })
-  firstName: string;
-
-  @Column({ nullable: true })
-  lastName: string;
-
-  @Column({ nullable: true })
-  transactionReference: string;
-
-  @Column({ nullable: true })
-  chapaRedirectUrl: string;
-
-  @Column({ nullable: true })
+  @Column({ type: 'varchar', default: 'pending' })
   status: string;
 
-  @Column({ nullable: true })
-  paymentChannel: string;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  chapaFees: number;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  amountReceived: number;
-
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @Column({ nullable: true })
-  verifiedAt: Date;
+  @Column({ type: 'timestamp', nullable: true })
+  verifiedAt?: Date;
 
-  @UpdateDateColumn()
-  updatedAt: Date;
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  amountReceived?: number;
+
+  @Column({ type: 'varchar', nullable: true })
+  paymentChannel?: string;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  chapaFees?: number;
 }
