@@ -1,4 +1,4 @@
-import { Inject, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Inject, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Counselor } from '../entities/counselor.entity';
 import { Repository } from 'typeorm';
@@ -132,4 +132,6 @@ async findByCounselorId(counselorUserId: string): Promise<Article[]> {
     await this.articleRepository.remove(article);
     return ' article removed ';
   }
+
+  
 }

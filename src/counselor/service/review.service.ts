@@ -76,14 +76,37 @@ async getAverageRatingForAllCounselors() {
 
 
 
+async getReviewsForCounselor(counselorId: string) {
+    try {
+      const reviews = await this.reviewRepo
+        .createQueryBuilder('review')
+        .leftJoinAndSelect('review.client', 'client')
+        .leftJoinAndSelect('client.user', 'user')
+        .where('review.counselor_id = :counselorId', { counselorId })
+        .getMany();
 
-
-
-  async getReviewsForCounselor(counselorId: string): Promise<Review[]> {
-    return this.reviewRepo.find({
-      where: { counselor: { userId: counselorId } },
-      relations: ['client'],
-      order: { createdAt: 'DESC' },
-    });
+      return reviews.map(review => ({
+        id: review.id,
+        client: {
+          id: review.client.userId,
+          profilePicture: review.client.profilePicture || null,
+          userId: review.client.userId || null,
+          user: {
+            id: review.client.user?.id || review.client.userId || null,
+            firstName: review.client.user?.firstName || 'Unknown',
+            lastName: review.client.user?.lastName || '',
+          },
+        },
+        rating: review.rating,
+        comment: review.comment,
+        createdAt: review.createdAt,
+      }));
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+      return [];
+    }
   }
+
+
+  
 }

@@ -101,7 +101,7 @@ export class PaymentService {
         await this.notificationService.sendNotification({
           recipientId: user.id,
           role: user.role,
-          message: 'Payment is successful!',
+          message: 'Payment is successful!,',
           type: 'SYSTEM',
         });
       }
@@ -158,7 +158,7 @@ export class PaymentService {
           await this.notificationService.sendNotification({
             recipientId: user.id,
             role: user.role,
-            message: `Payment of ${payment.amount} ETB was successful`,
+            message: `Payment of ${payment.amount} ETB was successful. you booked a schedule you can join your session using the link on the dashboard.`,
             type: 'SYSTEM',
           });
         }

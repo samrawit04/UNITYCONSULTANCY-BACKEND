@@ -79,6 +79,7 @@ private userRepository: Repository<User>,
     const zoomMeeting = await this.zoomService.createMeeting({
       topic: 'Counseling Session',
       startTime: start.toISOString(),
+      endTime:end.toISOString(),
       duration,
     });
 
@@ -174,6 +175,7 @@ private userRepository: Repository<User>,
       const zoomMeeting = await this.zoomService.createMeeting({
         topic: 'Counseling Session',
         startTime: start.toISOString(),
+        endTime:end.toISOString(),
         duration,
       });
 
@@ -258,7 +260,7 @@ async getBookingsByClient(clientId: string) {
     clientId: booking.clientId, // Add clientId
     date: booking.schedule?.date,
     startTime: booking.schedule?.startTime,
-    endTime: booking.schedule?.startTime,
+    endTime: booking.schedule?.endTime,
     zoomJoinUrl: booking.zoomJoinUrl,
     counselor: booking.schedule?.counselor
       ? {
@@ -339,6 +341,9 @@ async getBookingsByClient(clientId: string) {
       topic: 'Counseling Session',
       startTime: new Date(
         `${new Date(schedule.date).toISOString().split('T')[0]}T${schedule.startTime}`,
+      ).toISOString(),
+      endTime: new Date(
+        `${new Date(schedule.date).toISOString().split('T')[0]}T${schedule.endTime}`,
       ).toISOString(),
       duration: 60,
     });

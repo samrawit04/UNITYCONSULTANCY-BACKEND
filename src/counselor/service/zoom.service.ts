@@ -39,11 +39,13 @@ export class ZoomService {
   async createMeeting({
     topic,
     startTime,
+    endTime,
     duration,
     timezone = 'UTC',
   }: {
     topic: string;
     startTime: string; // ISO string
+    endTime:string
     duration: number; // in minutes
     timezone?: string;
   }): Promise<{ join_url: string; start_url: string }> {
@@ -56,6 +58,7 @@ export class ZoomService {
           topic,
           type: 2, // Scheduled
           start_time: startTime,
+          end_time:endTime,
           duration,
           timezone,
           settings: {
