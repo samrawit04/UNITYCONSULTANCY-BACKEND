@@ -37,13 +37,9 @@ export class UserController {
 
   @Post('/signin')
   async login(@Body() loginDto: LoginDto) {
-    try {
+    
       const token = await this.userService.login(loginDto);
       return { success: true, token };
-    } catch (error) {
-      console.error('Login error:', error);
-      throw new BadRequestException(error.message);
-    }
   }
 
   @Post('forget-password')

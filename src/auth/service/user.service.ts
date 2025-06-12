@@ -29,6 +29,7 @@ import { Client } from 'src/client/entities/client.entity';
 import { Counselor } from 'src/counselor/entities/counselor.entity';
 import { Role } from '../enum/role.enum';
 import { NotificationService } from '../../Notification/service/notification.service';
+import { isEmail } from 'class-validator';
 
 export class UserService {
   constructor(
@@ -402,13 +403,14 @@ private readonly notificationService: NotificationService,
 
     if (!accountVerification) {
       throw new HttpException(
-        'verification_token_not_found',
+        'invalid OTP',
         HttpStatus.NOT_FOUND,
       );
     }
 
     // Check if OTP has expired
     const currentTime = new Date().getTime();
+    
     const createdTime = accountVerification.createdAt.getTime();
 
     if (currentTime - createdTime > OTP_LIFE_TIME_MS) {
@@ -416,7 +418,7 @@ private readonly notificationService: NotificationService,
         status: AccountVerificationStatusEnum.EXPIRED,
       });
       throw new HttpException(
-        'verification_token_expired',
+        'OTP expired',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -427,12 +429,12 @@ private readonly notificationService: NotificationService,
       !this.helper.compareHashedValue(otp, accountVerification.otp)
     ) {
       throw new HttpException(
-        'invalid_verification_token',
+        'invalid_OTP',
         HttpStatus.BAD_REQUEST,
       );
     } else if (!isOtp && accountVerification.otp !== otp) {
       throw new HttpException(
-        'invalid_verification_token',
+        'invalid_OTP',
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -453,39 +455,35 @@ private readonly notificationService: NotificationService,
     return account;
   }
 
-  async login(loginDto: LoginDto) {
-    const { email, password } = loginDto;
+async login(loginDto: LoginDto) {
+  const { email, password } = loginDto;
 
-    if (!email) {
-      throw new BadRequestException('Either email or phone number is required');
-    }
+  const user = await this.userRepository.findOne({
+    where: { email },
+  });
 
-    const user: User = await this.userRepository.findOne({
-      where: [email ? { email } : null].filter(Boolean),
-    });
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      throw new BadRequestException('Invalid email or password');
-    }
-
-    const tokenPayload = {
-      id: user.id,
-      email: user.email,
-    };
-
-    const token: LoginResponseDto = {
-      access_token: this.helper.generateAccessToken(tokenPayload),
-      refresh_token: this.helper.generateRefreshToken({
-        id: user.id,
-      }),
-    };
-    return {
-      token,
-      role: user.role,
-      id: user.id,
-    };
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    throw new BadRequestException('Invalid email or password');
   }
+
+  const tokenPayload = {
+    id: user.id,
+    email: user.email,
+  };
+
+  const token: LoginResponseDto = {
+    access_token: this.helper.generateAccessToken(tokenPayload),
+    refresh_token: this.helper.generateRefreshToken({ id: user.id }),
+  };
+
+  return {
+    token,
+    role: user.role,
+    id: user.id,
+  };
+}
+
+
 
   public verifyEmailTemplateForOtp(
     fullName: string,

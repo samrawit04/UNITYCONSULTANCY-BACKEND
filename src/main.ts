@@ -33,13 +33,17 @@ async function bootstrap() {
   passport.serializeUser((user, done) => done(null, user));
   passport.deserializeUser((obj, done) => done(null, obj));
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true, // Automatically transform payloads to DTO instances
-      whitelist: true, // Automatically strip properties that don't exist in DTO
-      forbidNonWhitelisted: true, // Throw error if any non-whitelisted properties are found
-    }),
-  );
+ app.useGlobalPipes(
+  new ValidationPipe({
+    transform: true,
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    validationError: {
+      target: false,
+      value: false,
+    },
+  }),
+);
 
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/',

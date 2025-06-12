@@ -25,11 +25,11 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column({ nullable: true })
-  password?: string;
+  @Column()
+  password: string;
 
-  @Column({ unique: true, nullable: true })
-  email?: string;
+  @Column({ unique: true})
+  email: string;
 
   @Column({
     type: 'enum',
